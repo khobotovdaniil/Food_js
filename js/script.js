@@ -272,51 +272,118 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     //Slider
-    const slides = document.querySelectorAll('.offer__slide'),
+    const slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+          slidesField = slidesWrapper.querySelector('.offer__slider-inner'),
+          slides = slidesWrapper.querySelectorAll('.offer__slide'),
           prevSlide = document.querySelector('.offer__slider-prev'),
           nextSlide = document.querySelector('.offer__slider-next'),
           currentSlide = document.querySelector('#current'),
-          totalSlides = document.querySelector('#total');
-
+          totalSlides = document.querySelector('#total'),
+          width = window.getComputedStyle(slidesWrapper).width;
+          
     let slideindex = 1;
-
-    showSlides(slideindex);
+    let offset = 0;
 
     if (slides.length < 10) {
         totalSlides.textContent = `0${slides.length}`;
+        currentSlide.textContent = `0${slideindex}`;
     } else {
         totalSlides.textContent = slides.length;
+        currentSlide.textContent = slideindex;
     }
 
-    function showSlides(n) {
-        if (n > slides.length) {
+    
+    slidesField.style.width = 100 * slides.length + '%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+
+    slidesWrapper.style.overflow = 'hidden';
+
+    slides.forEach(slide => {
+        slide.style.width = width;
+    });
+
+    nextSlide.addEventListener('click', () => {
+        if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideindex == slides.length) {
             slideindex = 1;
+        } else {
+            slideindex++;
         }
 
-        if (n < 1) {
-            slideindex = slides.length;
-        }
-
-        slides.forEach(item => item.style.display = 'none');
-        slides[slideindex -1].style.display = 'block';
-
-        if (slideindex < 10) {
+        if (slides.length < 10) {
             currentSlide.textContent = `0${slideindex}`;
         } else {
             currentSlide.textContent = slideindex;
         }
-        
-    }
-
-    function plusSlides(n) {
-        showSlides(slideindex += n);
-    }
+    });
 
     prevSlide.addEventListener('click', () => {
-        plusSlides(-1);
+        if (offset == 0) {
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideindex == 1) {  
+            slideindex = slides.length;
+        } else {
+            slideindex--;
+        }
+
+        if (slides.length < 10) {
+            currentSlide.textContent = `0${slideindex}`;
+        } else {
+            currentSlide.textContent = slideindex;
+        }
     });
 
-    nextSlide.addEventListener('click', () => {
-        plusSlides(1);
-    });
+    // showSlides(slideindex);
+
+    // if (slides.length < 10) {
+    //     totalSlides.textContent = `0${slides.length}`;
+    // } else {
+    //     totalSlides.textContent = slides.length;
+    // }
+
+    // function showSlides(n) {
+    //     if (n > slides.length) {
+    //         slideindex = 1;
+    //     }
+
+    //     if (n < 1) {
+    //         slideindex = slides.length;
+    //     }
+
+    //     slides.forEach(item => item.style.display = 'none');
+    //     slides[slideindex -1].style.display = 'block';
+
+    //     if (slideindex < 10) {
+    //         currentSlide.textContent = `0${slideindex}`;
+    //     } else {
+    //         currentSlide.textContent = slideindex;
+    //     }
+        
+    // }
+
+    // function plusSlides(n) {
+    //     showSlides(slideindex += n);
+    // }
+
+    // prevSlide.addEventListener('click', () => {
+    //     plusSlides(-1);
+    // });
+
+    // nextSlide.addEventListener('click', () => {
+    //     plusSlides(1);
+    // });
 });
