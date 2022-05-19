@@ -271,8 +271,52 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res => console.log(res));
+    //Slider
+    const slides = document.querySelectorAll('.offer__slide'),
+          prevSlide = document.querySelector('.offer__slider-prev'),
+          nextSlide = document.querySelector('.offer__slider-next'),
+          currentSlide = document.querySelector('#current'),
+          totalSlides = document.querySelector('#total');
 
+    let slideindex = 1;
+
+    showSlides(slideindex);
+
+    if (slides.length < 10) {
+        totalSlides.textContent = `0${slides.length}`;
+    } else {
+        totalSlides.textContent = slides.length;
+    }
+
+    function showSlides(n) {
+        if (n > slides.length) {
+            slideindex = 1;
+        }
+
+        if (n < 1) {
+            slideindex = slides.length;
+        }
+
+        slides.forEach(item => item.style.display = 'none');
+        slides[slideindex -1].style.display = 'block';
+
+        if (slideindex < 10) {
+            currentSlide.textContent = `0${slideindex}`;
+        } else {
+            currentSlide.textContent = slideindex;
+        }
+        
+    }
+
+    function plusSlides(n) {
+        showSlides(slideindex += n);
+    }
+
+    prevSlide.addEventListener('click', () => {
+        plusSlides(-1);
+    });
+
+    nextSlide.addEventListener('click', () => {
+        plusSlides(1);
+    });
 });
